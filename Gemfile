@@ -11,7 +11,9 @@ gem 'tesseract-ocr', '0.1.6'
 
 gem 'rmagick', '2.13.2', :require => 'RMagick'
 
-gem "paperclip", '4.2.0'
+gem 'paperclip', '4.2.0'
+
+gem 'aws-sdk', '1.49.0'
 
 group :test, :development do
   gem 'pry-rails', '0.3.2'

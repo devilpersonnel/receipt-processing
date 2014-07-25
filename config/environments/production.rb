@@ -65,4 +65,13 @@ Rails.application.configure do
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
+
+  config.paperclip_defaults = {
+    :storage => :s3,
+    :s3_credentials => {
+      :bucket => 'ocr-receipt-images',
+      :access_key_id => 'AKIAIZ66UVKLOIQ7ONAA',
+      :secret_access_key => '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'
+    }
+  }
 end
