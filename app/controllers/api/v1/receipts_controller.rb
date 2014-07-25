@@ -13,19 +13,17 @@ class Api::V1::ReceiptsController < ApplicationController
 
     raise CustomError.new("The receipt is already processed previously", 400) if already_extracted?(image_processor.md5_digest.to_s)
 
-    receipt_image.rewind
-    AWS::S3::S3Object.store(filename, receipt_image.read, ENV['BUCKET_NAME'], :access => :public_read)
-    image_url = AWS::S3::S3Object.url_for(filename, ENV['BUCKET_NAME'], :authenticated => false)
-
     # receipt_words.split(',').each do |new_word|
     #   WORDS_HASH[new_word.downcase] = true
     # end
 
     extracted_text = image_processor.extract_text
     if extracted_text.present?
-      @api_user.receipts << Receipt.new(extracted_text.merge({:filename => filename, :md5_digest => image_processor.md5_digest.to_s, :image_url => image_url}))
+      receipt = @api_user.receipts.new(extracted_text.merge({:filename => filename, :md5_digest => image_processor.md5_digest.to_s}))
+      receipt_image.rewind
+      receipt.image = receipt_image
       @api_user.save(:validate => false)
-      render json: extracted_text.merge({:meta => { :code => 200, :message => "Success" }})
+      render json: extracted_text.merge({:image_url => receipt.image_url, :meta => { :code => 200, :message => "Success" }})
     else
       raise CustomError.new("Something went wrong", 400)
     end

@@ -7,6 +7,8 @@ class User < ActiveRecord::Base
 
   before_create :generate_api_token, :generate_api_secret
 
+  has_many :receipts, dependent: :destroy
+
   def self.rest_authenticate(path, timestamp, api_token, hash_string)
     user = User.find_by(api_token: api_token)
     if user.present?
