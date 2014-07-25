@@ -1,4 +1,16 @@
 Rails.application.routes.draw do
+
+  get "welcome/index"
+  root :to => 'welcome#index'
+
+  namespace :api, :defaults => {:format => :json} do
+    namespace :v1 do
+      resources :receipts, :only => [:create]
+      resources :users, :only => [:create]
+      match "/login" => "users#login", :via => :post
+    end
+  end
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
