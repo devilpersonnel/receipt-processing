@@ -14,7 +14,7 @@ class ImageProcessor
         img.resize!(cols*3, rows*3, Magick::UndefinedFilter).quantize(256, Magick::GRAYColorspace).contrast(true)
       }
     end
-    img.format = "JPEG" if img.format == "GIF" || img.format == "TIFF" || img.format == "BMP"
+    img.format = "JPEG" # if img.format == "GIF" || img.format == "TIFF" || img.format == "BMP"
     extracted_text = e.text_for(img).strip
     if extracted_text.present?
       json_builder = JsonBuilder.new(extracted_text)
