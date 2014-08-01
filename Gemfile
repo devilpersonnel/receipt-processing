@@ -3,6 +3,8 @@ source 'https://rubygems.org'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.1.4'
 
+gem 'rake', '~> 10.3.2'
+
 gem 'mysql2', '0.3.16'
 
 gem 'bcrypt', '3.1.7'
