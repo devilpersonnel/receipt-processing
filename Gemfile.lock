@@ -1,3 +1,11 @@
+GIT
+  remote: git://github.com/capistrano/rvm.git
+  revision: dc35ec5e7a74a422250bd6ff5e8885c8b742d0e5
+  specs:
+    capistrano-rvm (0.1.1)
+      capistrano (~> 3.0)
+      sshkit (~> 1.2)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -35,11 +43,22 @@ GEM
     builder (3.2.2)
     call-me (0.0.2.3)
       refining
+    capistrano (3.1.0)
+      i18n
+      rake (>= 10.0.0)
+      sshkit (~> 1.3)
+    capistrano-bundler (1.1.2)
+      capistrano (~> 3.0)
+      sshkit (~> 1.2)
+    capistrano-rails (1.1.1)
+      capistrano (~> 3.1)
+      capistrano-bundler (~> 1.1)
     climate_control (0.0.3)
       activesupport (>= 3.0)
     cocaine (0.5.4)
       climate_control (>= 0.0.3, < 1.0)
     coderay (1.1.0)
+    colorize (0.7.3)
     erubis (2.7.0)
     ffi (1.9.3)
     ffi-extra (0.1.0)
@@ -59,6 +78,9 @@ GEM
     minitest (5.4.0)
     multi_json (1.10.1)
     mysql2 (0.3.16)
+    net-scp (1.2.1)
+      net-ssh (>= 2.6.5)
+    net-ssh (2.9.1)
     nokogiri (1.6.3.1)
       mini_portile (= 0.6.0)
     paperclip (4.2.0)
@@ -105,6 +127,10 @@ GEM
       actionpack (>= 3.0)
       activesupport (>= 3.0)
       sprockets (~> 2.8)
+    sshkit (1.5.1)
+      colorize
+      net-scp (>= 1.1.2)
+      net-ssh (>= 2.8.0)
     tesseract-ocr (0.1.6)
       call-me
       ffi-extra
@@ -125,6 +151,10 @@ PLATFORMS
 DEPENDENCIES
   aws-sdk (= 1.49.0)
   bcrypt (= 3.1.7)
+  capistrano (~> 3.1.0)
+  capistrano-bundler (~> 1.1.2)
+  capistrano-rails (~> 1.1.1)
+  capistrano-rvm!
   mysql2 (= 0.3.16)
   paperclip (= 4.2.0)
   pry-rails (= 0.3.2)
