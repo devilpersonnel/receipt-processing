@@ -6,7 +6,7 @@ class ImageProcessor
 
   def extract_text
     e = Tesseract::Engine.new {|e|
-      e.language  = :lol
+      e.language  = :eng
     }
     img =  Magick::Image.read(@receipt_image.path).first
     if img.filesize < 1048576
