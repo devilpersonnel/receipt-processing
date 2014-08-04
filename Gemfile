@@ -9,7 +9,7 @@ gem 'mysql2', '0.3.16'
 
 gem 'bcrypt', '3.1.7'
 
-gem 'tesseract-ocr', '0.1.6'
+gem 'tesseract-ocr', github: 'meh/ruby-tesseract-ocr'
 
 gem 'rmagick', '2.13.2', :require => 'RMagick'
 
