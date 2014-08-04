@@ -74,4 +74,6 @@ Rails.application.configure do
       :secret_access_key => 'O3D5JXjibwG2hwSXS3IuxtWX4mS/Xps4wPp4A7J4'
     }
   }
+
+  ENV['TESSDATA_PREFIX'] = '/usr/share/tesseract-ocr'
 end
