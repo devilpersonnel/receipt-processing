@@ -6,9 +6,6 @@ class ImageProcessor
 
   def extract_text
     e = Tesseract::Engine.new {|e|
-      if Rails.env == "production"
-        e.path = ENV['TESSDATA_PREFIX']
-      end
       e.language  = :eng
     }
     img =  Magick::Image.read(@receipt_image.path).first
