@@ -24,6 +24,8 @@ class Api::V1::ReceiptsController < ApplicationController
       receipt = @api_user.receipts.new(extracted_text.merge({:filename => filename, :md5_digest => image_processor.md5_digest.to_s}))
       receipt_image.rewind
       receipt.image = receipt_image
+      receipt.save(:validate => false)
+      receipt.reload
       @api_user.save(:validate => false)
       render json: extracted_text.merge({:image_url => receipt.image_url, :meta => { :code => 200, :message => "Success" }})
     else
