@@ -9,13 +9,15 @@ class Api::V1::ReceiptsController < ApplicationController
     receipt_image   = params[:receipt_image]
     image_processor = ImageProcessor.new(receipt_image)
     filename        = image_processor.sanitize_filename
-    # receipt_words   = params[:receipt_words]
+    receipt_words   = params[:receipt_words]
 
     raise CustomError.new("The receipt is already processed previously", 400) if already_extracted?(image_processor.md5_digest.to_s)
 
-    # receipt_words.split(',').each do |new_word|
-    #   WORDS_HASH[new_word.downcase] = true
-    # end
+    if receipt_words.present?
+      receipt_words.each do |new_word|
+        WORDS_HASH[new_word.downcase] = true
+      end
+    end
 
     extracted_text = image_processor.extract_text
     if extracted_text.present?
