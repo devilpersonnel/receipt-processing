@@ -36,7 +36,7 @@ class Api::V1::ReceiptsController < ApplicationController
   private
 
   def validate_image(image)
-    extension = image.original_filename.split('.')[1]
+    extension = image.original_filename.split('.')[1].split('?')[0]
     ["jpg", "jpeg", "png", "gif", "tif", "tiff", "bmp"].include? extension.downcase
   end
 
