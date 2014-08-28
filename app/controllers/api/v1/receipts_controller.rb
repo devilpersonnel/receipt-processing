@@ -21,13 +21,9 @@ class Api::V1::ReceiptsController < ApplicationController
 
     extracted_text = image_processor.extract_text
     if extracted_text.present?
-      receipt = @api_user.receipts.new(extracted_text.merge({:filename => filename, :md5_digest => image_processor.md5_digest.to_s}))
-      receipt_image.rewind
-      receipt.image = receipt_image
-      receipt.save(:validate => false)
-      receipt.reload
+      receipt = @api_user.receipts.new(extracted_text.merge({:filename => filename, :md5_digest => image_processor.md5_digest.to_s, :image_url => params[:receipt_image_url]}))
       @api_user.save(:validate => false)
-      render json: extracted_text.merge({:image_url => receipt.image_url, :meta => { :code => 200, :message => "Success" }})
+      render json: extracted_text.merge({:meta => { :code => 200, :message => "Success" }})
     else
       raise CustomError.new("Something went wrong", 400)
     end
