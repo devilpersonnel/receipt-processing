@@ -9,7 +9,7 @@ class ImageProcessor
       e.language  = :eng
     }
     img =  Magick::Image.read(@receipt_image.path).first
-    if img.filesize < 1048576
+    if img.filesize < 200000
       img.change_geometry!("#{img.columns}x") { |cols, rows, img|
         img.resize!(cols*3, rows*3, Magick::UndefinedFilter).quantize(256, Magick::GRAYColorspace).contrast(true)
       }
