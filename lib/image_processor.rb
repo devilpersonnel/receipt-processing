@@ -1,5 +1,14 @@
 class ImageProcessor
 
+  # For Conversion
+  #=> All colors to black except white
+  # => convert receipt.jpg -fill black -fuzz 50% +opaque "#ffffff" today_receipt.jpg
+  # => convert receipt1.jpg -fill black -fuzz 50% +opaque "#ffffff" today_receipt1.jpg
+  # tesseract receipt.jpg receipt
+  # tesseract today_receipt.jpg today_receipt
+  # tesseract receipt1.jpg receipt1
+  # tesseract today_receipt1.jpg today_receipt1
+
   def initialize(receipt_image)
     @receipt_image = receipt_image
   end
