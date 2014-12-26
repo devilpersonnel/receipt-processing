@@ -9,6 +9,8 @@ class ImageProcessor
   # tesseract receipt1.jpg receipt1
   # tesseract today_receipt1.jpg today_receipt1
 
+  # Image#opaque_channel(color, fill, opacity, true)
+
   def initialize(receipt_image)
     @receipt_image = receipt_image
   end
@@ -24,6 +26,8 @@ class ImageProcessor
       }
     end
     img.format = "JPEG" # if img.format == "GIF" || img.format == "TIFF" || img.format == "BMP"
+    img.fuzz = "50%"
+    img = img.opaque_channel("#ffffff","#000000",true)
     extracted_text = e.text_for(img).strip
     if extracted_text.present?
       json_builder = JsonBuilder.new(extracted_text)
