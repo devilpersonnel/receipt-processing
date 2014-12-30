@@ -25,7 +25,7 @@ class ImageProcessor
         img.resize!(cols*3, rows*3, Magick::UndefinedFilter).quantize(256, Magick::GRAYColorspace).contrast(true)
       }
     end
-    img.format = "JPEG" # if img.format == "GIF" || img.format == "TIFF" || img.format == "BMP"
+    img.format = "TIFF" # if img.format == "GIF" || img.format == "TIFF" || img.format == "BMP"
     img.fuzz = "50%"
     img = img.opaque_channel("#ffffff","#000000",true)
     extracted_text = e.text_for(img).strip
