@@ -29,6 +29,10 @@ class ImageProcessor
     img.format = "TIFF"
     img.fuzz = "50%"
     img = img.opaque_channel("#ffffff","#000000",true)
+    # img.write "#{Rails.root}/mantest/test#{Time.now.to_s.parameterize}.tif"
+    # img2 = img.deskew
+    # binding.pry
+    # img2.write "#{Rails.root}/mantest/test#{Time.now.to_s.parameterize}.tif"
     extracted_text = e.text_for(img).strip
     if extracted_text.present?
       json_builder = JsonBuilder.new(extracted_text)
