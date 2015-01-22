@@ -25,10 +25,11 @@ class ImageProcessor
         img.resize!(cols*3, rows*3, Magick::UndefinedFilter).quantize(256, Magick::GRAYColorspace).contrast(true)
       }
     end
+    img.colorspace = Magick::GRAYColorspace
+    blur = img.clone.blur_image(0,10)
+    img = blur.composite(img,Magick::CenterGravity,Magick::DivideCompositeOp)
+    img = img.linear_stretch('5%','0%')
     img.density = "300x300"
-    img.format = "TIFF"
-    img.fuzz = "50%"
-    img = img.opaque_channel("#ffffff","#000000",true)
     # img.write "#{Rails.root}/mantest/test#{Time.now.to_s.parameterize}.tif"
     # img2 = img.deskew
     # binding.pry
