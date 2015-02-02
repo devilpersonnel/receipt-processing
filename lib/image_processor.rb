@@ -25,11 +25,19 @@ class ImageProcessor
         img.resize!(cols*3, rows*3, Magick::UndefinedFilter).quantize(256, Magick::GRAYColorspace).contrast(true)
       }
     end
+
     img.colorspace = Magick::GRAYColorspace
     blur = img.clone.blur_image(0,10)
     img = blur.composite(img,Magick::CenterGravity,Magick::DivideCompositeOp)
-    img = img.linear_stretch('5%','0%')
-    img.density = "300x300"
+    img = img.linear_stretch('4%','0%')
+    img = img.sigmoidal_contrast_channel(5,40,true).quantize(16, Magick::GRAYColorspace).posterize(5)
+
+    # write out the result just to see what it looks like
+    #binding.pry
+    #img.grey?
+    #img.write('bw-1.tif'){|f| f.depth = 8}
+    # the block sets the saved image to a depth of 8-bits
+
     # img.write "#{Rails.root}/mantest/test#{Time.now.to_s.parameterize}.tif"
     # img2 = img.deskew
     # binding.pry
