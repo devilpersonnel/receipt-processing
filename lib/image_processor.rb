@@ -19,36 +19,30 @@ class ImageProcessor
     e = Tesseract::Engine.new {|e|
       e.language  = :eng
     }
-    img =  Magick::Image.read(@receipt_image.path).first
-    if img.filesize < 200000
-      img.change_geometry!("#{img.columns}x") { |cols, rows, img|
-        img.resize!(cols*3, rows*3, Magick::UndefinedFilter).quantize(256, Magick::GRAYColorspace).contrast(true)
-      }
-    end
+    #img =  Magick::Image.read(@receipt_image.path).first
+    `chmod 777 remove_border`
+    `./remove_border #{@receipt_image.path}`
 
-    img.colorspace = Magick::GRAYColorspace
-    blur = img.clone.blur_image(0,10)
-    img = blur.composite(img,Magick::CenterGravity,Magick::DivideCompositeOp)
-    img = img.linear_stretch('4%','0%')
-    img = img.sigmoidal_contrast_channel(5,40,true).quantize(16, Magick::GRAYColorspace).posterize(5)
+#   `convert #{@receipt_image.path} -colorspace Gray -lat 25x25-5% outfile.jpg`
 
-    # write out the result just to see what it looks like
-    #binding.pry
-    #img.grey?
-    #img.write('bw-1.tif'){|f| f.depth = 8}
-    # the block sets the saved image to a depth of 8-bits
-
-    # img.write "#{Rails.root}/mantest/test#{Time.now.to_s.parameterize}.tif"
-    # img2 = img.deskew
-    # binding.pry
-    # img2.write "#{Rails.root}/mantest/test#{Time.now.to_s.parameterize}.tif"
-    extracted_text = e.text_for(img).strip
-    if extracted_text.present?
-      json_builder = JsonBuilder.new(extracted_text)
-      image_json = json_builder.generate_json
-      return image_json
+#  `chmod 777 outfile.jpg`
+#     initial_file = File.absolute_path("outfile.jpg")
+#     binding.pry
+#     `convert #{initial_file} -crop \`convert #{@receipt_image.path} -negate -morphology Erode Square -lat 70x70-5% -trim -format '%wx%h%O' info:\`  +repage   cropped.jpg`
+#binding.pry
+    if File.exists?("cropped.jpg")
+      img = File.absolute_path("cropped.jpg")
+      extracted_text = e.text_for(img).strip
+      if extracted_text.present?
+        json_builder = JsonBuilder.new(extracted_text)
+        image_json = json_builder.generate_json
+        return image_json
+        #remove all the temporary images  
+      else
+        return nil
+      end
     else
-      return nil
+      return "Something wrong went in script"
     end
   end
 

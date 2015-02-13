@@ -1,0 +1,34 @@
+#!/bin/bash
+
+# set default values
+method=1				#1=mean, 2=mean and std, 3=mean and sqrt(mad)
+
+# set directory for temporary files
+dir="."    # suggestions are dir="." or dir="/tmp"
+
+echo "Process Starting"
+
+if [ $# -eq 0 ]
+	then 
+		echo "No file image provided"
+elif [ $# -gt 1 ]
+	then
+		echo "Too many arguments"
+else
+	echo $1 "File Found"
+
+	## initial image after binarization
+	convert $1 -colorspace Gray -lat 25x25-5% outfile.jpg
+	
+	#convert $1 -colorspace Gray -despeckle -despeckle -stroke black -strokewidth 1 -negate -morphology Erode Square -lat 50x50-5% -trim -format '%wx%h%O' mask.jpg
+	#convert clean4.jpg -colorspace Gray -despeckle -despeckle -negate -morphology Erode Octagon -lat 50x50-5% -trim -format '%wx%h%O' mask.jpg
+
+	convert outfile.jpg -crop \
+	    `convert $1 -colorspace Gray -negate -morphology Erode Square -lat 70x70-5% \
+	             -trim -format '%wx%h%O' info:`   +repage   cropped.jpg
+
+	#tesseract noisy_trimmed_2.jpg text
+
+fi
+	
+exit 0
