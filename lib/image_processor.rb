@@ -16,33 +16,49 @@ class ImageProcessor
   end
 
   def extract_text
+    image_json = nil
+    polished_image_path = "#{Rails.root.join('tmp', 'polished.jpg')}"
+    cropped_image_path = "#{Rails.root.join('tmp','cropped.jpg')}"
+
+    create_tmp_directory = Cocaine::CommandLine.new("mkdir", "-p :tmp_folder_path")
+    p create_tmp_directory.run(tmp_folder_path: "#{Rails.root.join('tmp')}")
+    # => "mkdir /tmp"
+
     e = Tesseract::Engine.new {|e|
       e.language  = :eng
     }
-    #img =  Magick::Image.read(@receipt_image.path).first
-    `chmod 777 remove_border`
-    `./remove_border #{@receipt_image.path}`
 
-#   `convert #{@receipt_image.path} -colorspace Gray -lat 25x25-5% outfile.jpg`
+    polish_image = Cocaine::CommandLine.new("convert", ":in -colorspace Gray -lat 25x25-5% :out")
+    p polish_image.run(in: @receipt_image.path,
+     out: polished_image_path)
+    # => "convert <image_path> -colorspace Gray -lat 25x25-5% polished.jpg"
 
-#  `chmod 777 outfile.jpg`
-#     initial_file = File.absolute_path("outfile.jpg")
-#     binding.pry
-#     `convert #{initial_file} -crop \`convert #{@receipt_image.path} -negate -morphology Erode Square -lat 70x70-5% -trim -format '%wx%h%O' info:\`  +repage   cropped.jpg`
-#binding.pry
-    if File.exists?("cropped.jpg")
-      img = File.absolute_path("cropped.jpg")
+    trim_image = Cocaine::CommandLine.new("convert", ":polished -crop `convert :original_image -colorspace Gray -negate -morphology Erode Square -lat 70x70-5% -trim -format :crop_info_format info:` +repage :cropped_path")
+    p trim_image.run(polished: polished_image_path,
+      original_image: @receipt_image.path,
+      crop_info_format: "%wx%h%O",
+      cropped_path: cropped_image_path
+      )
+    # => "convert outfile.jpg -crop `convert $1 -colorspace Gray -negate -morphology Erode Square -lat 70x70-5% -trim -format '%wx%h%O' info:` +repage cropped.jpg"
+
+    if File.exists?(cropped_image_path)
+      img = File.absolute_path(cropped_image_path)
       extracted_text = e.text_for(img).strip
       if extracted_text.present?
         json_builder = JsonBuilder.new(extracted_text)
         image_json = json_builder.generate_json
-        return image_json
-        #remove all the temporary images  
-      else
-        return nil
+        image_json
       end
+    end
+
+    delete_images = Cocaine::CommandLine.new("rm", "-rf :tmp_folder_path")
+    p delete_images.run(tmp_folder_path: "#{Rails.root.join('tmp')}")
+    # => "rm -rf /tmp"
+
+    if image_json.present?
+      return image_json
     else
-      return "Something wrong went in script"
+      return nil
     end
   end
 

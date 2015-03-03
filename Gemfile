@@ -17,6 +17,8 @@ gem 'paperclip', '4.2.0'
 
 gem 'aws-sdk', '1.49.0'
 
+gem 'cocaine', '0.5.4'
+
 group :test, :development do
   gem 'pry-rails', '0.3.2'
   gem 'spring', '1.1.3'
