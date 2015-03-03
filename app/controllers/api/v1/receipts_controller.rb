@@ -25,7 +25,7 @@ class Api::V1::ReceiptsController < ApplicationController
       @api_user.save(:validate => false)
       render json: extracted_text.merge({:meta => { :code => 200, :message => "Success" }})
     else
-      raise CustomError.new("Something went wrong", 400)
+      raise CustomError.new("No text found.", 400)
     end
   end
 
