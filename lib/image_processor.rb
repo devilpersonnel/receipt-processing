@@ -17,8 +17,9 @@ class ImageProcessor
 
   def extract_text
     image_json = nil
-    polished_image_path = "#{Rails.root.join('tmp', 'polished.jpg')}"
-    cropped_image_path = "#{Rails.root.join('tmp','cropped.jpg')}"
+    secure_hex = SecureRandom.hex
+    polished_image_path = "#{Rails.root.join('tmp', ('polished'+secure_hex+'.jpg'))}"
+    cropped_image_path = "#{Rails.root.join('tmp',('cropped'+secure_hex+'.jpg'))}"
 
     create_tmp_directory = Cocaine::CommandLine.new("mkdir", "-p :tmp_folder_path")
     p create_tmp_directory.run(tmp_folder_path: "#{Rails.root.join('tmp')}")
