@@ -31,10 +31,10 @@ class ImageProcessor
       e.language  = :eng
     }
 
-    resize_img = Cocaine::CommandLine.new("convert", ":in -resize 1000 :out")
+    resize_img = Cocaine::CommandLine.new("convert", ":in -resize 800 :out")
     p resize_img.run(in: @receipt_image.path,
      out: resized_image_path)
-    # => convert <image_path> -resize 1200 resized.jpg
+    # => convert <image_path> -resize 800 resized.jpg
 
     polish_image = Cocaine::CommandLine.new("convert", ":in -colorspace Gray -lat 25x25-5% :out")
     p polish_image.run(in: resized_image_path,
