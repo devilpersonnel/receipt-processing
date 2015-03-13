@@ -18,19 +18,20 @@ class ImageProcessor
   def extract_text
     image_json = nil
     secure_hex = SecureRandom.hex
-    resized_image_path = "#{Rails.root.join('tmp', ('resized'+secure_hex+'.jpg'))}"
-    polished_image_path = "#{Rails.root.join('tmp', ('polished'+secure_hex+'.jpg'))}"
-    cropped_image_path = "#{Rails.root.join('tmp',('cropped'+secure_hex+'.jpg'))}"
+    tmp_folder_path = "#{Rails.root.join('tmp'+secure_hex)}"
+    resized_image_path = "#{Rails.root.join(('tmp'+secure_hex), ('resized'+secure_hex+'.jpg'))}"
+    polished_image_path = "#{Rails.root.join(('tmp'+secure_hex), ('polished'+secure_hex+'.jpg'))}"
+    cropped_image_path = "#{Rails.root.join(('tmp'+secure_hex),('cropped'+secure_hex+'.jpg'))}"
 
     create_tmp_directory = Cocaine::CommandLine.new("mkdir", "-p :tmp_folder_path")
-    p create_tmp_directory.run(tmp_folder_path: "#{Rails.root.join('tmp')}")
+    p create_tmp_directory.run(tmp_folder_path: tmp_folder_path)
     # => "mkdir /tmp"
 
     e = Tesseract::Engine.new {|e|
       e.language  = :eng
     }
 
-    resize_img = Cocaine::CommandLine.new("convert", ":in -resize 1200 :out")
+    resize_img = Cocaine::CommandLine.new("convert", ":in -resize 1000 :out")
     p resize_img.run(in: @receipt_image.path,
      out: resized_image_path)
     # => convert <image_path> -resize 1200 resized.jpg
@@ -58,8 +59,8 @@ class ImageProcessor
       end
     end
 
-    # delete_images = Cocaine::CommandLine.new("rm", "-rf :tmp_folder_path")
-    # p delete_images.run(tmp_folder_path: "#{Rails.root.join('tmp')}")
+    delete_images = Cocaine::CommandLine.new("rm", "-rf :tmp_folder_path")
+    p delete_images.run(tmp_folder_path: tmp_folder_path)
     # => "rm -rf /tmp"
 
     if image_json.present?
