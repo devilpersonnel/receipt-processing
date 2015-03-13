@@ -43,7 +43,7 @@ class ImageProcessor
 
     trim_image = Cocaine::CommandLine.new("convert", ":polished -crop `convert :original_image -colorspace Gray -negate -morphology Erode Square -lat 70x70-5% -trim -format :crop_info_format info:` +repage :cropped_path")
     p trim_image.run(polished: polished_image_path,
-      original_image: @receipt_image.path,
+      original_image: resized_image_path,
       crop_info_format: "%wx%h%O",
       cropped_path: cropped_image_path
       )
