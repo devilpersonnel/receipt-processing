@@ -38,6 +38,7 @@ class ImageProcessor
       img = File.absolute_path(cleaned_image_path)
       extracted_text = e.text_for(img).strip
       if extracted_text.present?
+        extracted_text = extracted_text.gsub(/[^\p{Alnum} & % . * $]/, '')
         json_builder = JsonBuilder.new(extracted_text)
         image_json = json_builder.generate_json
         image_json
