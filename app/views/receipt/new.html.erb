@@ -1,0 +1,44 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8"/>
+  <title>Mini Ajax File Upload Form</title>
+</head>
+
+<body>
+
+<div class="row col-md-12">
+  <div class="col-md-4">
+    <form id="upload" method="post" action="/api/v1/receipts" enctype="multipart/form-data">
+      <div id="drop">
+        Drop Here
+
+        <a>Browse</a>
+        <input type="file" id="receipt_upload_button" name="receipt_image" multiple="false" />
+      </div>
+
+      <ul>
+        <!-- The file uploads will be shown here -->
+      </ul>
+
+    </form>
+  </div>
+
+  <div class="col-md-4 receipt-image-display-wrapper">
+    <img src="" id="receipt_image_display" height="75%" width="75%">
+  </div>
+
+  <div class="col-md-4">
+    <div class="row" id="result">
+  </div>
+
+</div>
+
+
+
+</div>
+
+</body>
+</html>

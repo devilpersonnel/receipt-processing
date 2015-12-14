@@ -1,5 +1,5 @@
 class ImageProcessor
-
+  require 'tesseract'
   # For Conversion
   #=> All colors to black except white
   # => convert receipt.jpg -fill black -fuzz 50% +opaque "#ffffff" today_receipt.jpg
@@ -34,11 +34,32 @@ class ImageProcessor
     p args
     p Cocaine::CommandLine.new(cleaner_path, "#{args} :in :out").run(in: @receipt_image.path, out: cleaned_image_path)
 
-    if File.exists?(cleaned_image_path)
-      img = File.absolute_path(cleaned_image_path)
+
+    # convert image to grayscale
+
+    graysclaed_image_path = Rails.root.join('tmp', "grayscaled-#{secure_hex}.jpg").to_s
+    args = "-colorspace Gray -gamma 2.2"
+    p Cocaine::CommandLine.new("convert", "#{args} :in :out").run(in: cleaned_image_path, out: graysclaed_image_path)
+
+    # blured image 2 times
+    blured_image_path = Rails.root.join('tmp', "blured-#{secure_hex}.jpg").to_s
+    args = "-blur 0x2"
+    p Cocaine::CommandLine.new("convert", "#{args} :in :out").run(in: graysclaed_image_path, out: blured_image_path)
+
+    # Now divide the blurred image and greyed image with each other.
+    normalized_image_path = Rails.root.join('tmp', "normalized-#{secure_hex}.jpg").to_s
+    # convert text_scan.png \( +clone -blur 0x20 \) \
+    #       -compose Divide_Src -composite  text_scan_divide.png
+    # args = "-compose ColorDodge -composite"
+    # p Cocaine::CommandLine.new("convert", "#{args} :in :out").run(in: blured_image_path, out: graysclaed_image_path)
+
+
+
+    if File.exists?(blured_image_path)
+      img = File.absolute_path(blured_image_path)
       extracted_text = e.text_for(img).strip
       if extracted_text.present?
-        extracted_text = extracted_text.gsub(/[^\p{Alnum} & % . * $]/, '')
+        # extracted_text = extracted_text.gsub(/[^\p{Alnum} & % . * $]/, '')
         json_builder = JsonBuilder.new(extracted_text)
         image_json = json_builder.generate_json
         image_json
@@ -46,7 +67,7 @@ class ImageProcessor
     end
 
     delete_images = Cocaine::CommandLine.new("rm", ":path")
-    p delete_images.run(path: cleaned_image_path)
+    # p delete_images.run(path: cleaned_image_path)
     # => "rm /tmp/cleanedimage-hex.jpg"
 
     if image_json.present?

@@ -9,7 +9,7 @@ gem 'mysql2', '0.3.16'
 
 gem 'bcrypt', '3.1.7'
 
-gem 'tesseract-ocr', '0.1.7'
+gem 'tesseract-ocr'
 
 gem 'rmagick', '2.13.2', :require => 'RMagick'
 
@@ -29,12 +29,21 @@ group :development do
   gem 'capistrano', '~> 3.1.0'
   gem 'capistrano-bundler', '~> 1.1.2'
   gem 'capistrano-rails', '~> 1.1.1'
-  gem 'capistrano-rvm', github: "capistrano/rvm"
+  gem 'capistrano-rvm', :github => "capistrano/rvm"
 end
 
+group :assets do
+  gem 'sass-rails'
+  gem 'coffee-rails'
+  gem 'uglifier'
+end
+
+gem 'sass'
 # Use unicorn as the app server
 # gem 'unicorn'
 
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
+ENV['CFLAGS'] = '-I/usr/local/Cellar/tesseract/3.02.02_3/include -I/usr/local/Cellar/leptonica/1.71_1/include'
+ENV['LDFLAGS'] = '-L/usr/local/Cellar/tesseract/3.02.02_3/lib -L/usr/local/Cellar/leptonica/1.71_1/lib'

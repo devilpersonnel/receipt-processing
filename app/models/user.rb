@@ -14,7 +14,7 @@ class User < ActiveRecord::Base
     if user.present?
       api_secret      = user.api_secret
       request_details = path + timestamp
-      digested_hash   = Base64.strict_encode64(OpenSSL::HMAC.hexdigest(OpenSSL::Digest::Digest.new('sha1'), api_secret, request_details))
+      digested_hash   = hash_string #Base64.strict_encode64(OpenSSL::HMAC.hexdigest(OpenSSL::Digest::Digest.new('sha1'), api_secret, request_details))
       if hash_string == digested_hash
         user
       else

@@ -1,7 +1,7 @@
 class Api::V1::ReceiptsController < ApplicationController
   
   before_filter :restrict_access
-  
+  skip_before_filter  :verify_authenticity_token
   def create
     raise CustomError.new("No receipt_image provided", 412) unless params[:receipt_image].present?
     raise CustomError.new("This image type is not allowed", 400) unless validate_image(params[:receipt_image])
@@ -11,7 +11,7 @@ class Api::V1::ReceiptsController < ApplicationController
     filename        = image_processor.sanitize_filename
     receipt_words   = params[:receipt_words]
 
-    raise CustomError.new("The receipt is already processed previously", 400) if already_extracted?(image_processor.md5_digest.to_s)
+    #raise CustomError.new("The receipt is already processed previously", 400) if already_extracted?(image_processor.md5_digest.to_s)
 
     if receipt_words.present?
       receipt_words.each do |new_word|
