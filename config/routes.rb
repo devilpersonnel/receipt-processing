@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
 
 
+  resources :papers
+
   root :to => 'receipt#new'
 
   namespace :api, :defaults => {:format => :json} do

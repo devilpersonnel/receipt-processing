@@ -1,0 +1,4 @@
+<h1>Papers#index</h1>
+<% @papers.each do |p|%>
+<%= image_tag p.avatar.url(:medium) %>
+<%end%>
