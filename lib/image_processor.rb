@@ -1,5 +1,6 @@
 class ImageProcessor
   require 'tesseract'
+  require 'rtesseract'
   # For Conversion
   #=> All colors to black except white
   # => convert receipt.jpg -fill black -fuzz 50% +opaque "#ffffff" today_receipt.jpg
@@ -26,38 +27,45 @@ class ImageProcessor
     p create_tmp_directory.run(tmp_folder_path: tmp_folder_path)
     # => "mkdir /tmp"
 
-    e = Tesseract::Engine.new {|e| e.language  = :eng }
+    # e = Tesseract::Engine.new {|e| e.language  = :eng }
 
     #cleaning up image
-    args = "-e normalize -f 15 -o 5 -S 400"
+    args = '-g -e normalize -f 15 -o 10 -t 35'
 
     p args
     p Cocaine::CommandLine.new(cleaner_path, "#{args} :in :out").run(in: @receipt_image.path, out: cleaned_image_path)
 
 
     # convert image to grayscale
+    #resized and sharpened the image
 
-    graysclaed_image_path = Rails.root.join('tmp', "grayscaled-#{secure_hex}.jpg").to_s
-    args = "-colorspace Gray -gamma 2.2"
-    p Cocaine::CommandLine.new("convert", "#{args} :in :out").run(in: cleaned_image_path, out: graysclaed_image_path)
+    grayscaled_image_path = Rails.root.join('tmp', "grayscaled-#{secure_hex}.jpg").to_s
+    args = "-colorspace Gray -gamma 2.2 -unsharp 6.8x7.8+2.69+0 -quality 100"
+    p Cocaine::CommandLine.new("convert", "#{args} :in :out").run(in: cleaned_image_path, out: grayscaled_image_path)
 
-    # blured image 2 times
-    blured_image_path = Rails.root.join('tmp', "blured-#{secure_hex}.jpg").to_s
-    args = "-blur 0x2"
-    p Cocaine::CommandLine.new("convert", "#{args} :in :out").run(in: graysclaed_image_path, out: blured_image_path)
+    # # blured image 2 times
+    # blured_image_path = Rails.root.join('tmp', "blured-#{secure_hex}.jpg").to_s
+    # args = "-blur 0x2"
+    # p Cocaine::CommandLine.new("convert", "#{args} :in :out").run(in: graysclaed_image_path, out: blured_image_path)
+    #
+    # # Now divide the blurred image and greyed image with each other.
+    # normalized_image_path = Rails.root.join('tmp', "normalized-#{secure_hex}.jpg").to_s
+    # # convert text_scan.png \( +clone -blur 0x20 \) \
+    # #       -compose Divide_Src -composite  text_scan_divide.png
+    # # args = "-compose ColorDodge -composite"
+    # # p Cocaine::CommandLine.new("convert", "#{args} :in :out").run(in: blured_image_path, out: graysclaed_image_path)
 
-    # Now divide the blurred image and greyed image with each other.
-    normalized_image_path = Rails.root.join('tmp', "normalized-#{secure_hex}.jpg").to_s
-    # convert text_scan.png \( +clone -blur 0x20 \) \
-    #       -compose Divide_Src -composite  text_scan_divide.png
-    # args = "-compose ColorDodge -composite"
-    # p Cocaine::CommandLine.new("convert", "#{args} :in :out").run(in: blured_image_path, out: graysclaed_image_path)
+    # otsu binarization
+    # binarization_path = Rails.root.join('bash_script', 'otsuthresh').to_s
+    # binarized_image_path = Rails.root.join('tmp', "binarized-#{secure_hex}.jpg").to_s
+    # args = ''
+    # p args
+    # p Cocaine::CommandLine.new(binarization_path, "#{args} :in :out").run(in: grayscaled_image_path, out: binarized_image_path)
 
-
-
-    if File.exists?(blured_image_path)
-      img = File.absolute_path(blured_image_path)
-      extracted_text = e.text_for(img).strip
+    if File.exists?(grayscaled_image_path)
+      img = File.absolute_path(grayscaled_image_path)
+      image = RTesseract.read(img){|img| img=img}
+      extracted_text = image.to_s
       if extracted_text.present?
         # extracted_text = extracted_text.gsub(/[^\p{Alnum} & % . * $]/, '')
         json_builder = JsonBuilder.new(extracted_text)
