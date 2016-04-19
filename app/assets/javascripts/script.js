@@ -91,7 +91,6 @@ $(function () {
             $('body').waitMe('hide');
             // Something has gone wrong!
             if (e.lines) {
-
                 $.each(e.lines, function( index, value ) {
                     $('#result').append( value.text + "</br>");
                 });

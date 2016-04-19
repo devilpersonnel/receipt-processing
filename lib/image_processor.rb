@@ -18,54 +18,19 @@ class ImageProcessor
 
   def extract_text
     # image_json = nil
-    secure_hex = SecureRandom.hex
+    @secure_hex = SecureRandom.hex
     tmp_folder_path = Rails.root.join('tmp').to_s
-    cleaned_image_path = Rails.root.join('tmp', "cropped-#{secure_hex}.jpg").to_s
-    cleaner_path = Rails.root.join('bash_script', 'textcleaner').to_s
 
     create_tmp_directory = Cocaine::CommandLine.new("mkdir", "-p :tmp_folder_path")
     p create_tmp_directory.run(tmp_folder_path: tmp_folder_path)
     # => "mkdir /tmp"
 
-    # e = Tesseract::Engine.new {|e| e.language  = :eng }
+    cleaned_image_path=clean_the_image(@receipt_image.path)
+    grayscale_the_image(cleaned_image_path)
 
-    #cleaning up image
-    args = '-g -e normalize -f 15 -o 10 -t 35'
-
-    p args
-    p Cocaine::CommandLine.new(cleaner_path, "#{args} :in :out").run(in: @receipt_image.path, out: cleaned_image_path)
-
-
-    # convert image to grayscale
-    #resized and sharpened the image
-
-    grayscaled_image_path = Rails.root.join('tmp', "grayscaled-#{secure_hex}.jpg").to_s
-    args = "-colorspace Gray -gamma 2.2 -unsharp 6.8x7.8+2.69+0 -quality 100"
-    p Cocaine::CommandLine.new("convert", "#{args} :in :out").run(in: cleaned_image_path, out: grayscaled_image_path)
-
-    # # blured image 2 times
-    # blured_image_path = Rails.root.join('tmp', "blured-#{secure_hex}.jpg").to_s
-    # args = "-blur 0x2"
-    # p Cocaine::CommandLine.new("convert", "#{args} :in :out").run(in: graysclaed_image_path, out: blured_image_path)
-    #
-    # # Now divide the blurred image and greyed image with each other.
-    # normalized_image_path = Rails.root.join('tmp', "normalized-#{secure_hex}.jpg").to_s
-    # # convert text_scan.png \( +clone -blur 0x20 \) \
-    # #       -compose Divide_Src -composite  text_scan_divide.png
-    # # args = "-compose ColorDodge -composite"
-    # # p Cocaine::CommandLine.new("convert", "#{args} :in :out").run(in: blured_image_path, out: graysclaed_image_path)
-
-    # otsu binarization
-    # binarization_path = Rails.root.join('bash_script', 'otsuthresh').to_s
-    # binarized_image_path = Rails.root.join('tmp', "binarized-#{secure_hex}.jpg").to_s
-    # args = ''
-    # p args
-    # p Cocaine::CommandLine.new(binarization_path, "#{args} :in :out").run(in: grayscaled_image_path, out: binarized_image_path)
-
-    if File.exists?(grayscaled_image_path)
-      img = File.absolute_path(grayscaled_image_path)
-      image = RTesseract.read(img){|img| img=img}
-      extracted_text = image.to_s
+    if File.exists?(@tiff_image_path)
+      extracted_text = image_to_text(@tiff_image_path)
+      extracted_text = compare(extracted_text)
       if extracted_text.present?
         # extracted_text = extracted_text.gsub(/[^\p{Alnum} & % . * $]/, '')
         json_builder = JsonBuilder.new(extracted_text)
@@ -80,6 +45,7 @@ class ImageProcessor
 
     if image_json.present?
       return image_json
+
     else
       return nil
     end
@@ -93,5 +59,46 @@ class ImageProcessor
   def md5_digest
     Digest::MD5.file(@receipt_image.path)
   end
+
+  def image_to_text(image)
+    text = RTesseract.read(image){|img| img=img}
+    clean_the_text(text.to_s)
+  end
+
+  def clean_the_text(text)
+    text.gsub(/[^$\/0-9A-Za-z\n]/,' ')
+  end
+  def compare(text)
+    accuracy_of_processed_image = check_accuracy(text)
+    grayscale_the_image(@receipt_image.path)
+    text_of_unprocessed_image = image_to_text(@tiff_image_path)
+    accuracy_of_unprocessed_image = check_accuracy(text_of_unprocessed_image)
+    accuracy_of_processed_image > accuracy_of_unprocessed_image ? text : text_of_unprocessed_image
+  end
+
+  def check_accuracy(text)
+    accuracy_checker = AccuracyChecker.new(text)
+    accuracy_checker.calculate_accuracy.round(2)
+  end
+
+  def clean_the_image(image_path)
+    cleaned_image_path = Rails.root.join('tmp', "cropped-#{@secure_hex}.jpg").to_s
+    cleaner_path = Rails.root.join('bash_script', 'textcleaner').to_s
+    #cleaning up image
+    args = '-e normalize -f 25 -o 10 -t 50'
+    # -g -f 20 -o 10 -t 50
+    p args
+    p Cocaine::CommandLine.new(cleaner_path, "#{args} :in :out").run(in: image_path, out: cleaned_image_path)
+    cleaned_image_path
+  end
+
+  def grayscale_the_image(image_path)
+    grayscaled_image_path = Rails.root.join('tmp', "grayscaled-#{@secure_hex}.png").to_s
+    args = "-colorspace Gray -unsharp 6.8x7.8+2.69+0 -quality 100"
+    p Cocaine::CommandLine.new("convert", "#{args} :in :out").run(in: image_path, out: grayscaled_image_path)
+    @tiff_image_path = Rails.root.join('tmp',"tiff-#{@secure_hex}.tiff").to_s
+    p Cocaine::CommandLine.new("convert", ":in :out").run(in: grayscaled_image_path, out: @tiff_image_path)
+  end
+
 
 end

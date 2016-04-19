@@ -20,3 +20,4 @@
 /mantest
 cropped.jpg
 outfile.jpg
+*.DS_Store
