@@ -5,7 +5,7 @@ gem 'rails', '4.1.4'
 
 gem 'rake', '~> 10.3.2'
 
-gem 'mysql2', '0.3.16'
+gem 'mysql2', '0.3.17'
 
 gem 'bcrypt', '3.1.7'
 

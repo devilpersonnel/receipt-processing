@@ -8,7 +8,7 @@ set :repo_url, 'git@bitbucket.org:3tierlogiccarlo/nepal-receipt-processing-2.git
 # ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }
 
 # Default deploy_to directory is /var/www/my_app
-set :deploy_to, '/home/deploy/receipt_processing'
+set :deploy_to, '/home/milan/receipt_processing'
 
 # Default value for :scm is :git
 # set :scm, :git

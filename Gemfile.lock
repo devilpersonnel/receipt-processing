@@ -84,7 +84,7 @@ GEM
     mimemagic (0.3.0)
     mini_portile2 (2.0.0)
     minitest (5.8.3)
-    mysql2 (0.3.16)
+    mysql2 (0.3.17)
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
     net-ssh (3.0.1)
@@ -174,7 +174,7 @@ DEPENDENCIES
   capistrano-rvm!
   cocaine (= 0.5.5)
   coffee-rails
-  mysql2 (= 0.3.16)
+  mysql2 (= 0.3.17)
   paperclip (~> 4.3)
   pry-rails (= 0.3.2)
   rails (= 4.1.4)
@@ -188,4 +188,4 @@ DEPENDENCIES
   uglifier
 
 BUNDLED WITH
-   1.11.2
+   1.12.5

@@ -12,11 +12,11 @@ $(function () {
     $('#upload').fileupload({
         formData: {
             timestamp: '23213123123123',
-            api_token: '4b461a7794dd160a7c7bc1f993952d2a'
+            api_token: 'c7005a1469cba52aefe02c35d6fdb1a1'
         },
         beforeSend: function (xhr, data) {
             var file = data.files[0];
-            xhr.setRequestHeader('Rest-Signature', 'N2FkZTc5ZDE4M2Y0MzVlNGI2OWY0YTM2MzBmMzdhZjBiNzVjMTVlOQ==');
+            xhr.setRequestHeader('Rest-Signature', 'KUIAmcIPyPhkZO51WcZdPT5+W6F2XB1iAGR+7qMwriU=');
         },
         // This element will accept file drag/drop uploading
         dropZone: $('#drop'),
