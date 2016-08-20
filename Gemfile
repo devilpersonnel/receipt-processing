@@ -29,6 +29,7 @@ end
 # Using Capistrano for deployment
 group :development do
   gem 'capistrano', '~> 3.1.0'
+  gem 'capistrano3-puma'
   gem 'capistrano-bundler', '~> 1.1.2'
   gem 'capistrano-rails', '~> 1.1.1'
   gem 'capistrano-rvm', :github => "capistrano/rvm"
@@ -41,6 +42,7 @@ group :assets do
 end
 
 gem 'sass'
+gem 'puma'
 # Use unicorn as the app server
 # gem 'unicorn'
 
