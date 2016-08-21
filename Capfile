@@ -3,6 +3,7 @@ require 'capistrano/setup'
 
 # Includes default deployment tasks
 require 'capistrano/deploy'
+require 'capistrano/rvm'
 require 'capistrano/puma'
 require 'capistrano/rails/migrations'
 require 'capistrano/rails/assets'
@@ -18,8 +19,6 @@ require 'capistrano/rails/assets'
 #   https://github.com/capistrano/rails
 #
 require 'capistrano/rvm'
-set :rvm_type, :user
-set :rvm_ruby_version, '2.1.2-p95'
 # require 'capistrano/rbenv'
 # require 'capistrano/chruby'
 require 'capistrano/bundler'
