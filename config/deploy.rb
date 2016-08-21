@@ -51,20 +51,20 @@ set :puma_init_active_record, true
 set :puma_preload_app, false
 
 #####################################
-# namespace :deploy do
+namespace :deploy do
 
-#   desc 'Restart application'
-#   task :restart do
-#     on roles(:app), in: :sequence, wait: 5 do
-#       # Your restart mechanism here, for example:
-#       execute :touch, release_path.join('tmp/restart.txt')
-#     end
-#   end
+  desc 'Restart application'
+  task :restart do
+    on roles(:app), in: :sequence, wait: 5 do
+      # Your restart mechanism here, for example:
+      execute :touch, release_path.join('tmp/restart.txt')
+    end
+  end
 
-#   after :publishing, 'deploy:restart'
-#   after :finishing, 'deploy:cleanup'
-# end
-#########################################
+  after :publishing, 'deploy:restart'
+  after :finishing, 'deploy:cleanup'
+end
+
   # after :publishing, :restart
 
   # after :restart, :clear_cache do
