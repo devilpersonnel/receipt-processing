@@ -8,7 +8,7 @@ set :repo_url, 'https://github.com/devilpersonnel/receipt-processing'
 # ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }
 
 # Default deploy_to directory is /var/www/my_app
-set :deploy_to, '/home/deploy/nepal-receipt_processing'
+set :deploy_to, '/home/deploy/nepal-receipt-processing'
 set :pty, true
 
 # Default value for :scm is :git
