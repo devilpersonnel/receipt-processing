@@ -77,33 +77,51 @@ end
   #     # end
   #   end
   # end
-  namespace :deploy do
+  set :assets_dependencies, %w(app/assets lib/assets vendor/assets Gemfile.lock config/routes.rb)
+
+# clear the previous precompile task
+Rake::Task["deploy:assets:precompile"].clear_actions
+class PrecompileRequired < StandardError; end
+
+namespace :deploy do
   namespace :assets do
-
-    Rake::Task['deploy:assets:precompile'].clear_actions
-
-    desc 'Precompile assets locally and upload to servers'
+    desc "Precompile assets"
     task :precompile do
       on roles(fetch(:assets_roles)) do
-        run_locally do
+        within release_path do
           with rails_env: fetch(:rails_env) do
-            execute 'bin/rake assets:precompile'
+            begin
+              # find the most recent release
+              latest_release = capture(:ls, '-xr', releases_path).split[1]
+
+              # precompile if this is the first deploy
+              raise PrecompileRequired unless latest_release
+
+              latest_release_path = releases_path.join(latest_release)
+
+              # precompile if the previous deploy failed to finish precompiling
+              execute(:ls, latest_release_path.join('assets_manifest_backup')) rescue raise(PrecompileRequired)
+
+              fetch(:assets_dependencies).each do |dep|
+                # execute raises if there is a diff
+                execute(:diff, '-Naur', release_path.join(dep), latest_release_path.join(dep)) rescue raise(PrecompileRequired)
+              end
+
+              info("Skipping asset precompile, no asset diff found")
+
+              # copy over all of the assets from the last release
+              execute(:cp, '-r', latest_release_path.join('public', fetch(:assets_prefix)), release_path.join('public', fetch(:assets_prefix)))
+            rescue PrecompileRequired
+              execute(:rake, "assets:precompile") 
+            end
           end
         end
-
-        # within release_path do
-        #   with rails_env: fetch(:rails_env) do
-        #     old_manifest_path = "#{shared_path}/public/assets/manifest*"
-        #     execute :rm, old_manifest_path if test "[ -f #{old_manifest_path} ]"
-        #     upload!('./public/assets/', "#{shared_path}/public/", recursive: true)
-        #   end
-        # end
-
-        run_locally { execute 'rm -rf public/assets' }
       end
     end
-
   end
+end
+
+  
 end
 
 
