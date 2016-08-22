@@ -81,7 +81,7 @@ Rails.application.configure do
   config.assets.precompile += %w( *.js )
   config.assets.precompile += [ 'application.css',
                                 'style.css',
-                                'bootstrap.min.css'
+                                'bootstrap.min.css',
                                 'waitMe.min.css'
                                 ]
 
