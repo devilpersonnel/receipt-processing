@@ -10,6 +10,8 @@ Rails.application.configure do
   # Rake tasks automatically ignore this option for performance.
   config.eager_load = true
   config.assets.compile = false
+  config.assets.compress = true
+  config.assets.digest = true
 
   # Full error reports are disabled and caching is turned on.
   config.consider_all_requests_local       = false
@@ -75,6 +77,13 @@ Rails.application.configure do
       :secret_access_key => 'O3D5JXjibwG2hwSXS3IuxtWX4mS/Xps4wPp4A7J4'
     }
   }
+  config.assets.precompile += %w( .svg .eot .woff .ttf )
+  config.assets.precompile += %w( *.js )
+  config.assets.precompile += [ 'application.css',
+                                'style.css',
+                                'bootstrap.min.css'
+                                'waitMe.min.css'
+                                ]
 
   ENV['CFLAGS'] = "-I/usr/local/include"
   ENV['LDFLAGS'] = "-L/usr/local/lib"
