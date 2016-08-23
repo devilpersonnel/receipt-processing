@@ -43,6 +43,7 @@ end
 
 gem 'sass'
 gem 'puma'
+gem 'sprockets'
 # Use unicorn as the app server
 # gem 'unicorn'
 

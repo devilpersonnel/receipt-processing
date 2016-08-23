@@ -190,6 +190,7 @@ DEPENDENCIES
   sass
   sass-rails
   spring (= 1.1.3)
+  sprockets
   tesseract-ocr
   uglifier
 
