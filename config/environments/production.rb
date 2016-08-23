@@ -9,7 +9,7 @@ Rails.application.configure do
   # and those relying on copy on write to perform better.
   # Rake tasks automatically ignore this option for performance.
   config.eager_load = true
-  config.assets.compile = false
+  config.assets.compile = true
   config.assets.compress = true
   config.assets.digest = true
 
