@@ -77,7 +77,7 @@ set :puma_preload_app, false
   #     # end
   #   end
   # end
-#   set :assets_dependencies, %w(app/assets lib/assets vendor/assets Gemfile.lock config/routes.rb)
+set :assets_dependencies, %w(app/assets lib/assets vendor/assets Gemfile.lock config/routes.rb)
 
 # # clear the previous precompile task
 Rake::Task["deploy:assets:precompile"].clear_actions
